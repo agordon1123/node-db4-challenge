@@ -18,10 +18,21 @@ router.get('/:id', (req, res) => {
 
 router.get('/:id/recipes', (req, res) => {
     const { id } = req.params;
-    console.log(id);
     Ingredients.getRecipesByIngredient(id)
         .then(recipes => res.status(200).json(recipes))
         .catch(err => res.status(200).json(err));
+});
+
+router.post('/:id/recipes', (req, res) => {
+    const { id } = req.params;
+    const newRecipeIngredient = req.body;
+    if (!newRecipeIngredient.ingredient_id || !newRecipeIngredient.quantity) {
+        res.status(400).json({ error: 'Please include a valid ingredient and quantity' })
+    } else {
+        Ingredients.addRecipeIngredient(newRecipeIngredient, id)
+            .then(success => res.status(201).json(success))
+            .catch(err => res.status(500).json(error));
+    }
 });
 
 module.exports = router;
